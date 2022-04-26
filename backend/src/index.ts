@@ -1,0 +1,74 @@
+import * as express from 'express';
+import * as cors from 'cors';
+import * as http from 'http';
+import {GetBotMessage,GetBotInfo} from './service/chatbot'
+import { Server, Socket } from "socket.io";
+import {MessageInterface} from './interface/messageinterfaces'
+const aikotoba = 'seastory'
+const port = process.env.PORT || 8000;
+const app = express();
+app.use(cors());
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: '*'
+    }
+});
+io.on('connection',async function (socket : Socket) {
+    //時報
+    const date = new Date()
+    const now = date.getTime();
+    const nextHours = date.getHours() + 1;
+    const next = date.setHours(nextHours, 0, 0,0);
+    const diff = next - now;
+    setTimeout(() => {
+        setInterval(()=>{
+            const timeBot = GetBotInfo(2);
+            var hour =date.getHours();
+            var messageAdviceInTimeMessage = hour>14?'あとちょっとだ！がんばれ！':'ｷﾗﾝ!' 
+            const timeMessage:MessageInterface={
+                name:timeBot.name,
+                avatorType:timeBot.avatorType,
+                message:`ほら、${date.getHours()}時だぞ！${messageAdviceInTimeMessage}`
+            };
+            io.emit('receive',timeMessage);
+        }, 1000 * 60*60)
+    }, diff);
+    //メッセージ受信時
+    socket.on('message',async function (payload:MessageInterface) {
+        console.log('name:['+payload.name+']icon:['+payload.avatorType+']message:[' + payload.message)+']';
+        io.emit('receive',payload);
+        //ボっとの返信
+        if(payload.message.includes('--')){
+            //メッセージ取得
+            const bot =GetBotInfo(1); 
+            console.log(bot);
+            const botMessage =await GetBotMessage(payload.message,bot);
+            const returnMessage :MessageInterface= {
+                name:bot.name,
+                message:botMessage,
+                avatorType:bot.avatorType
+            };
+            io.emit('receive',returnMessage);
+        }
+    });
+    console.log('connected!');
+    socket.on
+});
+app.use(express.json());
+app.post('/easyauth',(req :express.Request,res:express.Response)=>{
+    console.log(req.body);
+    if(req.body.aikotoba===aikotoba){
+        res.json({message: true});
+    }
+    else{
+        res.json({message: false});
+    }
+});
+app.get('/', (_, res :express.Response) => res.send(`Server is up`));
+
+
+
+server.listen(port,()=>{
+    console.log(`ポート:${port}`);
+});
