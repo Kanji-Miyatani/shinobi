@@ -1,0 +1,21 @@
+{
+  "name": "neetsincompanyweb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node backend/index.js",
+    "heroku-postbuild": "cd frontend && npm install && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kanji-Miyatani/shinobi.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kanji-Miyatani/shinobi/issues"
+  },
+  "homepage": "https://github.com/Kanji-Miyatani/shinobi#readme"
+}
