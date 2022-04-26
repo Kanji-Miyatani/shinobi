@@ -41,11 +41,13 @@ var cors = require("cors");
 var http = require("http");
 var chatbot_1 = require("./service/chatbot");
 var socket_io_1 = require("socket.io");
+var path = require("path");
 var aikotoba = 'seastory';
 var port = process.env.PORT || 8000;
 var app = express();
 app.use(cors());
 var server = http.createServer(app);
+app.use(express.static(path.join(__dirname, '../../frontend/build')));
 var io = new socket_io_1.Server(server, {
     cors: {
         origin: '*'
@@ -115,6 +117,9 @@ app.post('/easyauth', function (req, res) {
     else {
         res.json({ message: false });
     }
+});
+app.get('*', function (req, res) {
+    res.sendFile(path.join(__dirname, '../../frontend/build/index.html'));
 });
 app.get('/', function (_, res) { return res.send("Server is up"); });
 server.listen(port, function () {

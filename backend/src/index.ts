@@ -4,11 +4,13 @@ import * as http from 'http';
 import {GetBotMessage,GetBotInfo} from './service/chatbot'
 import { Server, Socket } from "socket.io";
 import {MessageInterface} from './interface/messageinterfaces'
+import * as path from 'path';
 const aikotoba = 'seastory'
 const port = process.env.PORT || 8000;
 const app = express();
 app.use(cors());
 const server = http.createServer(app);
+app.use(express.static(path.join(__dirname, '../../frontend/build')));
 const io = new Server(server, {
     cors: {
         origin: '*'
@@ -64,6 +66,9 @@ app.post('/easyauth',(req :express.Request,res:express.Response)=>{
     else{
         res.json({message: false});
     }
+});
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname,'../../frontend/build/index.html'));
 });
 app.get('/', (_, res :express.Response) => res.send(`Server is up`));
 
