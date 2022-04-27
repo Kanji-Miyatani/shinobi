@@ -9,7 +9,7 @@
     overflow-y: scroll;
     width: 100%;
     text-align: left !important;
-    max-height:20vh ;
+    max-height:40vh;
     /* IE, Edge 対応 */
     -ms-overflow-style: none;
     /* Firefox 対応 */

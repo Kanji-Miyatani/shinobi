@@ -19,6 +19,7 @@ function ChatRoom() {
     const [flagShowChat, setFlagShowChat] = useState(false);
     const socketref = useRef();
     function thisfocus(){
+        document.getElementById('message').focus();
         setFlagShowChat(true);
     };
     function thisblur(){
@@ -51,9 +52,14 @@ function ChatRoom() {
     },[]);
  
   return (
-    <div className="ChatRoom" onBlur={()=>{thisblur()}} onFocus={()=>{thisfocus()}} style={flagShowChat?{opacity:'1.0'}:{opacity:'0.25'}}>
+    <div className="ChatRoom" 
+    onBlur={()=>{thisblur()}}
+    onFocus={()=>{thisfocus()}} 
+    onClick={()=>{if(!flagShowChat){
+      thisfocus()
+    }}} style={flagShowChat?{opacity:'1.0'}:{opacity:'0.18'}}>
       <header className="ChatRoom-header" id="Chat-DispArea">
-       <List dense sx={{ width: '100%', bgcolor:'rgba(255, 255, 255, 0.1)' }}>
+       <List dense sx={{ width: '100%', bgcolor:'rgba(255, 255, 255, 0.15)' }}>
       {messageList.slice(messageList.length-13<0?0:messageList.length-13).map((value,id) => {
         const labelId = `checkbox-list-secondary-label-${value}`;
         return (
