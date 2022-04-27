@@ -1,0 +1,9 @@
+.updateblog-main-wrapper{
+    margin-right: 3vw;
+    margin-top: 25vh;
+    display: flex;
+    width: 20%;
+    height:80%;
+    overflow-y: scroll;
+    padding-top:30vh;
+}

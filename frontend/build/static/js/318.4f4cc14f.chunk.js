@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkfrontend=self.webpackChunkfrontend||[]).push([[318],{9318:function(e,n,s){e.exports=s.p+"static/media/penguin.462865e8631aff7b3893.svg"}}]);

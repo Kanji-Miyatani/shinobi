@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkfrontend=self.webpackChunkfrontend||[]).push([[59],{5059:function(e,s,n){e.exports=n.p+"static/media/ossan1.55942fed9bb5bc368bd0.svg"}}]);

@@ -1,0 +1,37 @@
+{
+  "files": {
+    "main.css": "/static/css/main.4c70cb14.css",
+    "main.js": "/static/js/main.b1e36fe7.js",
+    "static/js/831.91f67213.chunk.js": "/static/js/831.91f67213.chunk.js",
+    "static/js/474.b2ebdc1f.chunk.js": "/static/js/474.b2ebdc1f.chunk.js",
+    "static/js/375.858191f8.chunk.js": "/static/js/375.858191f8.chunk.js",
+    "static/js/74.30444819.chunk.js": "/static/js/74.30444819.chunk.js",
+    "static/js/371.e36fc9fc.chunk.js": "/static/js/371.e36fc9fc.chunk.js",
+    "static/js/59.64b99757.chunk.js": "/static/js/59.64b99757.chunk.js",
+    "static/js/318.4f4cc14f.chunk.js": "/static/js/318.4f4cc14f.chunk.js",
+    "static/js/130.8ebbed5d.chunk.js": "/static/js/130.8ebbed5d.chunk.js",
+    "static/js/185.e907fe1c.chunk.js": "/static/js/185.e907fe1c.chunk.js",
+    "static/js/330.8d5ebead.chunk.js": "/static/js/330.8d5ebead.chunk.js",
+    "static/js/88.95a8b44d.chunk.js": "/static/js/88.95a8b44d.chunk.js",
+    "static/js/738.200646b3.chunk.js": "/static/js/738.200646b3.chunk.js",
+    "static/media/ossan1.svg": "/static/media/ossan1.55942fed9bb5bc368bd0.svg",
+    "static/media/eggman.svg": "/static/media/eggman.a7a106800ee6edcd0144.svg",
+    "static/media/goku.svg": "/static/media/goku.02b1779c4dc5f5e53ae7.svg",
+    "static/media/marin.svg": "/static/media/marin.40649ff866304b76a251.svg",
+    "static/media/samu.svg": "/static/media/samu.6ce7821bc9aac2c98a10.svg",
+    "static/media/pikachu.svg": "/static/media/pikachu.29b586ecd4be98be4d47.svg",
+    "static/media/tatsu.svg": "/static/media/tatsu.a04e26ec3b8bb9b31f32.svg",
+    "static/media/penguin.svg": "/static/media/penguin.462865e8631aff7b3893.svg",
+    "static/media/mexico.svg": "/static/media/mexico.b350db05f942b61beba8.svg",
+    "static/media/shinobi.svg": "/static/media/shinobi.d0fc55ce1c039bbbf798.svg",
+    "static/media/gang.svg": "/static/media/gang.c452d9caa1f3c44164aa.svg",
+    "static/media/shark.svg": "/static/media/shark.eece685fb88a4f75b934.svg",
+    "index.html": "/index.html",
+    "main.4c70cb14.css.map": "/static/css/main.4c70cb14.css.map",
+    "main.b1e36fe7.js.map": "/static/js/main.b1e36fe7.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4c70cb14.css",
+    "static/js/main.b1e36fe7.js"
+  ]
+}

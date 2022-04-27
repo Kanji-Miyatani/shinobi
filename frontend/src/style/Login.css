@@ -1,0 +1,56 @@
+.Login {
+  text-align: center;
+  background-color: #262f40;
+}
+.input--{
+  padding: 1rem;
+}
+.login-body{
+  
+  display: flex;
+}
+.avator-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+  appearance: none;
+  margin-bottom: 10px;
+}
+
+
+.Login-header {
+  min-height: 100vh;
+  width:80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.file-input-container{
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+  
+  width: 190px;
+}
+.main-logo-container{
+  padding: 15px 30px;
+}
+.file-input-container>label>input{
+  display:none; 
+}
+.file-input-container>label{
+  color: #AAAAAA; /* ラベルテキストの色を指定する */
+  background-color: #181924;/* ラベルの背景色を指定する */
+  padding: 10px; /* ラベルとテキスト間の余白を指定する */
+  border: none;/* ラベルのボーダーを指定する */
+  border-radius:5px ;
+  pointer-events: stroke;
+  cursor: pointer;
+  max-width: 100%;
+}

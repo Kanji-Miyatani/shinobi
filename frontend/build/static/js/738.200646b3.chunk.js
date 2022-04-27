@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkfrontend=self.webpackChunkfrontend||[]).push([[738],{4738:function(e,t,s){e.exports=s.p+"static/media/tatsu.a04e26ec3b8bb9b31f32.svg"}}]);

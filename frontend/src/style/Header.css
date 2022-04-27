@@ -1,0 +1,32 @@
+.header-container{
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0px;
+    background-color:#282c3420 ;
+    z-index: 10;
+    height: 50px;
+}
+.logo{
+    padding: 15px 1%;
+    vertical-align: middle;
+    height: 80%;
+    text-shadow :#0b0c0d31;
+    text-decoration: wavy;
+}
+.header-shinobina{
+    color: rgba(35, 35, 49, 0.677);
+    padding-right: 3px;
+}
+
+.shinobina-icon{
+    background-color: rgb(214, 214, 220);
+    border-radius: 7px;
+    padding: 5px 8px;
+    margin-right: 5px;
+    text-shadow :#0b0c0d31;
+    text-decoration: wavy;
+    font-style: italic;
+    
+}

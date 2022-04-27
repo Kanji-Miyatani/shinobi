@@ -1,0 +1,20 @@
+.ChatRoom{
+    background-color: #fcfbfb2f;
+    min-width:300px;
+    width: 70%;
+    max-width:700px;
+  
+}
+.ChatRoom-header{
+    overflow-y: scroll;
+    width: 100%;
+    text-align: left !important;
+    max-height:20vh ;
+    /* IE, Edge 対応 */
+    -ms-overflow-style: none;
+    /* Firefox 対応 */
+    scrollbar-width: none;
+}
+.ChatRoom-header::-webkit-scrollbar{
+    display: none;
+}

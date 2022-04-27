@@ -1,0 +1,32 @@
+.fotter-container{
+    position: fixed; /* ヘッダーを固定する */
+    bottom: 0; /* 上部から配置の基準位置を決める */
+    left: 0; /* 左から配置の基準位置を決める */
+    width: 100%; /* ヘッダーの横幅を指定する */
+    height: 20px; /* ヘッダーの高さを指定する */
+    padding: 5px; /* ヘッダーの余白を指定する(上下左右) */
+    background-color: #142f134d; /* ヘッダーの背景色を指定する */
+    color: #000000; /* フォントの色を指定する */
+    display: flex;
+    animation-name:fadeUpAnime;
+animation-duration:1s;
+animation-fill-mode:forwards;
+opacity:0;
+} 
+
+.fotter-container:hover{
+    transform: rotateX(360deg);
+}
+
+
+@keyframes fadeUpAnime{
+    from {
+      opacity: 0;
+    transform: translateY(100px);
+    }
+  
+    to {
+      opacity: 1;
+    transform: translateY(0);
+    }
+  }

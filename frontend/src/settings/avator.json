@@ -1,0 +1,44 @@
+{
+    "avotors":[
+        {
+            "key":1 ,
+            "type":"shinobi"
+        },
+        {
+            "key":2 ,
+            "type":"gang"
+        },
+        {
+            "key":3 ,
+            "type":"penguin"
+        },
+        {
+            "key":4 ,
+            "type":"pikachu"
+        },
+        {
+            "key":5 ,
+            "type":"shark"
+        },
+        {
+            "key":6 ,
+            "type":"tatsu"
+        },
+        {
+            "key":7 ,
+            "type":"mexico"
+        },
+        {
+            "key":8 ,
+            "type":"ossan1"
+        },
+        {
+            "key":9 ,
+            "type":"eggman"
+        },
+        {
+            "key":10 ,
+            "type":"goku"
+        }
+    ]
+}

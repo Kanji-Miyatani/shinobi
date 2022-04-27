@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkfrontend=self.webpackChunkfrontend||[]).push([[831],{831:function(e,n,s){e.exports=s.p+"static/media/eggman.a7a106800ee6edcd0144.svg"}}]);

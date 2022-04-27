@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkfrontend=self.webpackChunkfrontend||[]).push([[330],{1330:function(e,s,n){e.exports=n.p+"static/media/shark.eece685fb88a4f75b934.svg"}}]);

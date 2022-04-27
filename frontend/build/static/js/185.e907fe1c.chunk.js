@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkfrontend=self.webpackChunkfrontend||[]).push([[185],{3185:function(e,c,s){e.exports=s.p+"static/media/samu.6ce7821bc9aac2c98a10.svg"}}]);
