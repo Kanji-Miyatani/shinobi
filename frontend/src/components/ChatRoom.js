@@ -37,7 +37,7 @@ function ChatRoom() {
       }
     };
     useEffect(()=>{
-        socketref.current=io('http://192.168.0.160:8000');
+        socketref.current=io();
         socketref.current.on('receive',(msg)=>{
             console.log('receive');
             const {message,name,avatorType} = msg;

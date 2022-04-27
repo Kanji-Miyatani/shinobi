@@ -89,7 +89,7 @@ function Login() {
         params.append('aikotoba', aikotoba);
         console.log('submit');
         console.log('submit');
-        axios.post('http://192.168.0.160:8000/easyauth', params)
+        axios.post('/easyauth', params)
             .then(function (res) {
                 dispatch({
                     type:'SET_AUTHSTATE',
