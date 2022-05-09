@@ -12,16 +12,20 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Checkbox from '@mui/material/Checkbox';
 import Avatar from '@mui/material/Avatar';
 import store from '../store/store.js';
+import AvatorIcon from './AvatorIcon';
 import '../style/ChatRoom.css'
 function ChatRoom() {
     const [messageList,setMessageList] = useState([]);
     const [message, setMessage] = useState('');
+    const [users, setUsers] = useState([]);
     const [flagShowChat, setFlagShowChat] = useState(false);
     const socketref = useRef();
     function thisfocus(){
         document.getElementById('message').focus();
         setFlagShowChat(true);
     };
+    console.log('users');
+    console.log(users);
     function thisblur(){
         setFlagShowChat(false);
     };
@@ -39,8 +43,16 @@ function ChatRoom() {
     };
     useEffect(()=>{
         socketref.current=io();
+        socketref.current.emit('entry', {
+          name:store.getState().loginInfoReducer.name,
+          avatorType:store.getState().loginInfoReducer.avatorType,
+        });
+        //ユーザー取得
+        socketref.current.on('users list',(users)=>{
+            setUsers(users);
+        })
+        //メッセージ取得
         socketref.current.on('receive',(msg)=>{
-            console.log('receive');
             const {message,name,avatorType} = msg;
                 setMessageList(list=>[...list, {
                     name:name,
@@ -58,6 +70,17 @@ function ChatRoom() {
     onClick={()=>{if(!flagShowChat){
       thisfocus()
     }}} style={flagShowChat?{opacity:'1.0'}:{opacity:'0.18'}}>
+       <div className="avators-row">
+        {
+            users.map((user,id)=>{
+              console.log('user rendering...');
+              return(
+              <div>
+                {user.name}
+              </div>)
+            })
+          }
+      </div>
       <header className="ChatRoom-header" id="Chat-DispArea">
        <List dense sx={{ width: '100%', bgcolor:'rgba(255, 255, 255, 0.15)' }}>
       {messageList.slice(messageList.length-13<0?0:messageList.length-13).map((value,id) => {

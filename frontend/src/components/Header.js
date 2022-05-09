@@ -7,7 +7,12 @@ const name = useSelector(state => state.loginInfoReducer.name)
   return (
     <div className="header-container">
         <img className="logo" src={logo}/>
-        <div className='header-shinobina'><spna className="shinobina-icon">忍名</spna><span>{name}</span></div>
+        {
+          name!=''?(
+            <div className='header-shinobina'><spna className="shinobina-icon">忍名</spna><span>{name}</span></div>
+          ):null
+        }
+       
     </div>
   )
 }

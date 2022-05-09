@@ -16,6 +16,9 @@
     text-decoration: wavy;
     opacity: 70%;
 }
+.avators-row{
+    display: flex;
+}
 .header-shinobina{
     color: rgba(35, 35, 49, 0.677);
     padding-right: 3px;

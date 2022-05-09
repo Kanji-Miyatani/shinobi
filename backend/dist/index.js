@@ -53,28 +53,39 @@ var io = new socket_io_1.Server(server, {
         origin: '*'
     }
 });
+var users = [];
 io.on('connection', function (socket) {
     return __awaiter(this, void 0, void 0, function () {
-        var date, now, nextHours, next, diff;
         return __generator(this, function (_a) {
-            date = new Date();
-            now = date.getTime();
-            nextHours = date.getHours() + 1;
-            next = date.setHours(nextHours, 0, 0, 0);
-            diff = next - now;
-            setTimeout(function () {
-                setInterval(function () {
-                    var timeBot = (0, chatbot_1.GetBotInfo)(2);
-                    var hour = date.getHours();
-                    var messageAdviceInTimeMessage = hour > 14 ? 'あとちょっとだ！がんばれ！' : 'ｷﾗﾝ!';
-                    var timeMessage = {
-                        name: timeBot.name,
-                        avatorType: timeBot.avatorType,
-                        message: "\u307B\u3089\u3001".concat(date.getHours(), "\u6642\u3060\u305E\uFF01").concat(messageAdviceInTimeMessage)
-                    };
-                    io.emit('receive', timeMessage);
-                }, 1000 * 60 * 60);
-            }, diff);
+            //接続時
+            socket.on('entry', function (name, avatorType) {
+                users.push({
+                    id: socket.id,
+                    name: name,
+                    avatorType: avatorType
+                });
+                console.log("entry:".concat(name));
+                io.emit('users list', users);
+            });
+            //時報
+            // const date = new Date()
+            // const now = date.getTime();
+            // const nextHours = date.getHours() + 1;
+            // const next = date.setHours(nextHours, 0, 0,0);
+            // const diff = next - now;
+            // setTimeout(() => {
+            //     setInterval(()=>{
+            //         const timeBot = GetBotInfo(2);
+            //         var hour =date.getHours();
+            //         var messageAdviceInTimeMessage = hour>14?'あとちょっとだ！がんばれ！':'ｷﾗﾝ!' 
+            //         const timeMessage:MessageInterface={
+            //             name:timeBot.name,
+            //             avatorType:timeBot.avatorType,
+            //             message:`ほら、${now.To}時だぞ！${messageAdviceInTimeMessage}`
+            //         };
+            //         io.emit('receive',timeMessage);
+            //     }, 1000 * 60*60)
+            // }, diff);
             //メッセージ受信時
             socket.on('message', function (payload) {
                 return __awaiter(this, void 0, void 0, function () {
@@ -103,7 +114,10 @@ io.on('connection', function (socket) {
                 });
             });
             console.log('connected!');
-            socket.on;
+            socket.on('disconnect', function () {
+                users = users.filter(function (x) { return x.id != socket.id; });
+                console.log(users);
+            });
             return [2 /*return*/];
         });
     });
