@@ -81,7 +81,7 @@ function Login() {
             }
         })
         //モーダルを開く
-        handleOpen();
+        navigation('/home');
     };
     //合言葉送信
     const SubmitAikotoba=()=>{
@@ -109,7 +109,7 @@ function Login() {
     <div className="login-body">
       <header className="Login-header">
           <div className="main-logo-container">
-            <h2> 30周年突破記念！！</h2>
+            <h2>大幅アップデート済み</h2>
             <h2> </h2>
           </div>
         <button type="button" className="avator-button" onClick={()=>{ChangeAvatorType()}} >

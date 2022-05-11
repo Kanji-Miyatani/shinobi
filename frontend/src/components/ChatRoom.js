@@ -2,7 +2,9 @@ import io from 'socket.io-client';
 import { useState ,useEffect,useRef} from 'react';
 import { useSelector } from 'react-redux';
 import DressInput from '@mui/material/TextField';
+import FormControl from '@mui/material/FormControl';
 import AvatarIcon from '../components/AvatorIcon';
+import Slider from '@mui/material/Slider';
 import Button from '@mui/material/Button';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -18,8 +20,13 @@ function ChatRoom() {
     const [messageList,setMessageList] = useState([]);
     const [message, setMessage] = useState('');
     const [users, setUsers] = useState([]);
+    const [transparent, setTransparent] = useState(0.9);
     const [flagShowChat, setFlagShowChat] = useState(false);
     const socketref = useRef();
+    const handleChange = (event, newValue) => {
+      if(newValue<10)newValue=10; 
+      setTransparent(newValue*0.01);
+    };
     function thisfocus(){
         document.getElementById('message').focus();
         setFlagShowChat(true);
@@ -69,7 +76,7 @@ function ChatRoom() {
     onFocus={()=>{thisfocus()}} 
     onClick={()=>{if(!flagShowChat){
       thisfocus()
-    }}} style={flagShowChat?{opacity:'1.0'}:{opacity:'0.18'}}>
+    }}} style={flagShowChat?{opacity:transparent}:{opacity:'0.18'}}>
        <div className="avators-row">
         {
             users.map((user,id)=>{
@@ -98,9 +105,23 @@ function ChatRoom() {
     </List>
     </header>
     <form onSubmit={(e)=>{submitEvent(e);}} autoComplete="off">
-        <DressInput label="" variant="standard" className="input--" autoComplete="off" id="message" type="text" onChange={e => setMessage(e.target.value)} />
-        <Button variant="outlined" type="submit">送信
-        </Button>
+         
+         <FormControl sx={{ m: 1, width: '70%' }}  variant="standard">
+           <DressInput label="" variant="standard" className="input--" autoComplete="off" id="message" type="text" onChange={e => setMessage(e.target.value)} /> 
+         </FormControl>
+         <FormControl sx={{ m: 1, width: '15%' }}  variant="standard">
+          <Button variant="outlined" type="submit">送信
+          </Button>
+         </FormControl>
+         <FormControl sx={{ m: 1, width: '55%' }}  variant="standard">
+          <Slider
+            size="small"
+            defaultValue={70}
+            aria-label="Small"
+            valueLabelDisplay="auto"
+            onChange={handleChange}
+            />
+            </FormControl>
     </form>
     </div>
   );

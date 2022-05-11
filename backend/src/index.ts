@@ -3,7 +3,7 @@ import * as cors from 'cors';
 import * as http from 'http';
 import {GetBotMessage,GetBotInfo} from './service/chatbot'
 import { Server, Socket } from "socket.io";
-import {MessageInterface} from './interface/messageinterfaces'
+import {MessageInterface,UserEntryInterface} from './interface/messageinterfaces'
 import * as path from 'path';
 const aikotoba = 'seastory'
 const port = process.env.PORT || 8000;
@@ -19,13 +19,14 @@ const io = new Server(server, {
 let users = [];
 io.on('connection',async function (socket : Socket) {
     //接続時
-    socket.on('entry',(name:string,avatorType:string)=>{
+    socket.on('entry',(user:UserEntryInterface)=>{
         users.push({
             id : socket.id,
-            name: name,
-            avatorType:avatorType
+            name: user.name,
+            avatorType:user.avatorType
         });
-        console.log(`entry:${name}`)
+        console.log('userso');
+        console.log(users);
         io.emit('users list',users);
     });
     //時報
@@ -68,7 +69,7 @@ io.on('connection',async function (socket : Socket) {
     console.log('connected!');
     socket.on('disconnect',()=>{
         users=users.filter(x=>x.id!=socket.id);
-        console.log(users);
+        io.emit('users list',users);
     });
 });
 app.use(express.json());

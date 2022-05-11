@@ -58,13 +58,14 @@ io.on('connection', function (socket) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             //接続時
-            socket.on('entry', function (name, avatorType) {
+            socket.on('entry', function (user) {
                 users.push({
                     id: socket.id,
-                    name: name,
-                    avatorType: avatorType
+                    name: user.name,
+                    avatorType: user.avatorType
                 });
-                console.log("entry:".concat(name));
+                console.log('userso');
+                console.log(users);
                 io.emit('users list', users);
             });
             //時報
@@ -116,7 +117,7 @@ io.on('connection', function (socket) {
             console.log('connected!');
             socket.on('disconnect', function () {
                 users = users.filter(function (x) { return x.id != socket.id; });
-                console.log(users);
+                io.emit('users list', users);
             });
             return [2 /*return*/];
         });
