@@ -33,7 +33,9 @@ const state = {
   amount: 10000,
   when: "new",
   vs: 45,
+  mapMode: "3d",
 };
+let map3d = null;
 
 /* ───────── データ参照 ───────── */
 const mw = () => DATA.minimumWage;
@@ -88,10 +90,49 @@ async function init() {
   $("today-label").textContent = `${md(todayIso)}時点`;
   $("data-stamp").textContent = `データの取得日：${ymd(mw().retrieved)}`;
   render({ punch: false });
+  loadMap3D();
 
   if ("serviceWorker" in navigator && location.protocol === "https:") {
     navigator.serviceWorker.register("sw.js").catch(() => {});
   }
+}
+
+/* ───────── 立体地図（Three.js）：表示後に読み込み、使えなければマス目のまま ───────── */
+function webglAvailable() {
+  try {
+    const c = document.createElement("canvas");
+    return !!(c.getContext("webgl2") || c.getContext("webgl"));
+  } catch {
+    return false;
+  }
+}
+
+async function loadMap3D() {
+  if (!webglAvailable()) return;
+  try {
+    const { createMap3D } = await import("./map3d.js");
+    map3d = await createMap3D($("map3d"), {
+      geojsonUrl: "data/prefectures.geojson",
+      onSelect: (code) => setPref(code),
+    });
+  } catch {
+    map3d = null;
+    return;
+  }
+  $("map-mode").hidden = false;
+  applyMapMode();
+  render({ punch: false });
+}
+
+function applyMapMode() {
+  const three = state.mapMode === "3d" && map3d;
+  $("map3d").hidden = !three;
+  $("map-hint").hidden = !three;
+  $("tilemap").hidden = !!three;
+  for (const btn of document.querySelectorAll(".map-mode-btn")) {
+    btn.setAttribute("aria-pressed", String(btn.dataset.mode === state.mapMode));
+  }
+  if (three) map3d.resize();
 }
 
 function readUrl() {
@@ -105,6 +146,7 @@ function readUrl() {
   const amount = Number(q.get("yen"));
   if (Number.isInteger(amount) && amount >= 1 && amount <= MAX_AMOUNT) state.amount = amount;
   if (q.get("when") === "today") state.when = "today";
+  if (q.get("map") === "tile") state.mapMode = "tile";
   if (state.vs === state.pref) state.vs = state.pref === 13 ? 45 : 13;
 }
 
@@ -115,6 +157,7 @@ function writeUrl() {
   if (state.item === CUSTOM) q.set("yen", state.amount);
   if (state.when !== "new") q.set("when", state.when);
   q.set("vs", state.vs);
+  if (state.mapMode === "tile") q.set("map", "tile");
   history.replaceState(null, "", `${location.pathname}?${q}`);
 }
 
@@ -125,9 +168,9 @@ function buildSelects() {
   for (const id of ["pref", "cmp-a", "cmp-b"]) $(id).innerHTML = prefOptions;
 
   const items = DATA.items.map((i) => `<option value="${i.id}">${i.name}</option>`).join("");
-  $("item").innerHTML = `
-    <optgroup label="県ごとの価格（公的統計）">${items}</optgroup>
-    <option value="${CUSTOM}">金額を自分で入力する</option>`;
+  $("item").innerHTML =
+    (items ? `<optgroup label="県ごとの価格（公的統計）">${items}</optgroup>` : "") +
+    `<option value="${CUSTOM}">金額を自分で入力する</option>`;
   $("amount").value = yen(state.amount);
 }
 
@@ -179,6 +222,13 @@ function bind() {
       $("timecard").scrollIntoView({ behavior: "smooth", block: "center" });
     }
   });
+  for (const btn of document.querySelectorAll(".map-mode-btn")) {
+    btn.addEventListener("click", () => {
+      state.mapMode = btn.dataset.mode;
+      applyMapMode();
+      writeUrl();
+    });
+  }
   bindShare();
 }
 
@@ -308,6 +358,15 @@ function renderMap(item, ranked) {
     tile.setAttribute("aria-pressed", String(r.pref.code === state.pref));
     tile.setAttribute("aria-label", `${r.pref.name} ${fmtH(r.hours)}時間`);
   }
+  if (map3d) {
+    map3d.update(
+      ranked.map((r) => {
+        const t = max === min ? 0.5 : (r.hours - min) / (max - min);
+        return { code: r.pref.code, hours: r.hours, color: rampColor(t), text: `${r.pref.name} ${fmtH(r.hours)}時間` };
+      }),
+      state.pref,
+    );
+  }
   const what = item.custom ? `${yen(item.national)}円` : `その県の${item.name}`;
   $("map-caption").textContent = `${what}を、その県の最低賃金で払うと何時間？（数字は時間）`;
 }
@@ -387,7 +446,11 @@ function renderSources() {
     <li>
       最低賃金：<a href="${m.source.url}" rel="noopener" target="_blank">${m.source.org}「全ての都道府県で地域別最低賃金の改定額が答申されました」</a>
       <span class="src-meta">${m.fiscalYear}の${m.status}と${m.oldLabel}の額、発効予定日。${m.source.org}の公表資料を加工して作成。取得日 ${ymd(m.retrieved)}。一覧は<a href="${m.listUrl}" rel="noopener" target="_blank">地域別最低賃金の全国一覧</a>。</span>
-    </li>${items}`;
+    </li>${items}
+    <li>
+      地図：<a href="${DATA.geo.url}" rel="noopener" target="_blank">${DATA.geo.org}「${DATA.geo.name}」</a>（${DATA.geo.license}）
+      <span class="src-meta"><a href="${DATA.geo.viaUrl}" rel="noopener" target="_blank">${DATA.geo.via}</a>を簡略化し、小さな島を省いて表示しています。</span>
+    </li>`;
 }
 
 /* ───────── シェア ───────── */
@@ -411,6 +474,7 @@ function shareModel() {
     hm: hm(hours),
     days: workdays(hours).toFixed(1),
     tiles: TILES,
+    mapImage: state.mapMode === "3d" && map3d ? map3d.snapshot() : null,
     ranked,
     rampColor,
     vs: { pref: vs, hours: hoursFor(item.priceOf(vs), wageOf(vs)), wage: wageOf(vs) },
@@ -419,6 +483,7 @@ function shareModel() {
     credit:
       `最低賃金：${wageLabel(pref)}（${mw().source.org}）` +
       (item.custom ? "" : `、${item.short}：${item.source.credit}`) +
+      (form.figure.value === "map" ? `、地図：国土数値情報（${DATA.geo.org}）` : "") +
       "を加工して作成。額面（税・社会保険料の控除前）。",
     url: `${location.origin}${location.pathname}`,
   };

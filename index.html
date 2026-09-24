@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>それ、何時間労働？</title>
-  <meta name="description" content="都道府県と買いたいものを選ぶと、最低賃金で何時間働けば払えるかを表示します。47都道府県の地図とランキングで、同じ値札の重さを比べられます。">
+  <title>それ、何時間で払える？</title>
+  <meta name="description" content="都道府県を選ぶと、その県の最低賃金で何時間働けば払えるかを表示します。立体の日本地図とランキングで47都道府県を比べられます。">
   <meta name="theme-color" content="#FFD23F">
-  <meta property="og:title" content="それ、何時間労働？">
-  <meta property="og:description" content="値札を、その県の時給で割ってみる。47都道府県の最低賃金で「何時間働けば買えるか」を比べるWebアプリ。">
+  <meta property="og:title" content="それ、何時間で払える？">
+  <meta property="og:description" content="その県の最低賃金で、何時間働けば払える？ 47都道府県を立体の日本地図で比べるWebアプリ。">
   <meta property="og:type" content="website">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -22,7 +22,7 @@
   <a class="skip" href="#app">計算画面へ移動</a>
 
   <header class="masthead">
-    <p class="logo">それ、<span>何時間</span>労働？</p>
+    <p class="logo">それ、<span>何時間</span>で払える？</p>
     <a class="masthead-link" href="#sources">数字の出どころ</a>
   </header>
 
@@ -31,7 +31,7 @@
     <section class="stage" aria-labelledby="stage-title">
       <div class="stage-inner">
         <div class="ask">
-          <h1 id="stage-title" class="ask-title">値札を、<br>時給で割って<wbr>みる。</h1>
+          <h1 id="stage-title" class="ask-title">それ、<br>何時間で<wbr>払える？</h1>
 
           <form class="sentence" id="picker" aria-label="条件を選ぶ">
             <span class="pair"><label class="slot slot-pref">
@@ -93,7 +93,13 @@
             <span id="map-caption"></span>
             <span class="legend" aria-hidden="true"><span>短い</span><i class="ramp"></i><span>長い</span></span>
           </figcaption>
+          <div class="map-mode" id="map-mode" role="group" aria-label="地図の表示方法" hidden>
+            <button type="button" class="map-mode-btn" data-mode="3d" aria-pressed="true">立体地図</button>
+            <button type="button" class="map-mode-btn" data-mode="tile" aria-pressed="false">マス目（数字つき）</button>
+          </div>
+          <div class="map3d" id="map3d" hidden></div>
           <div class="tilemap" id="tilemap" role="group" aria-label="都道府県を選ぶ地図。各マスの数字は必要な労働時間"></div>
+          <p class="map-hint" id="map-hint" hidden>高さと色の濃さは、47都道府県の中で必要な時間が短い県ほど低く薄く、長い県ほど高く濃く表しています（差を見やすくするため、最も短い県を低い基準にしています）。ドラッグで向きを変え、タップで県を選べます。沖縄県は枠の中に移し、小さな島は省いています。</p>
         </figure>
       </div>
     </section>
@@ -138,7 +144,6 @@
             <ul>
               <li>時給は税金や社会保険料を引く前の額（額面）です。手取りではありません。</li>
               <li>最低賃金は各地の審議会の答申額です。公示で確定したら差し替えます。発効日前の県は、改定前の額もあわせて表示しています。</li>
-              <li>商品名と価格は各社の公式発表をもとにした文字情報です。このサイトは各社の公認・提携を受けたものではありません。</li>
               <li>入力した金額や選んだ条件は端末の中だけで計算し、どこにも送信・保存しません。</li>
             </ul>
           </div>
@@ -155,7 +160,7 @@
   </main>
 
   <footer class="foot">
-    <p>それ、何時間労働？ ／ 公的統計を加工して作成しています。</p>
+    <p>それ、何時間で払える？ ／ 公的統計を加工して作成しています。</p>
     <p id="data-stamp"></p>
   </footer>
 

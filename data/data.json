@@ -348,31 +348,17 @@
    }
   ]
  },
- "presets": [
-  {
-   "id": "iphone-duo-256",
-   "name": "iPhone Duo 256GB",
-   "price": 364800
-  },
-  {
-   "id": "iphone-duo-512",
-   "name": "iPhone Duo 512GB",
-   "price": 399800
-  },
-  {
-   "id": "iphone-duo-1tb",
-   "name": "iPhone Duo 1TB",
-   "price": 469800
-  },
-  {
-   "id": "iphone-duo-2tb",
-   "name": "iPhone Duo 2TB",
-   "price": 574800
-  }
- ],
- "presetSource": {
-  "name": "iPhone Duo を購入（Apple公式、税込価格）",
-  "url": "https://www.apple.com/jp/shop/buy-iphone/iphone-duo",
-  "registered": "2026-09-24"
+ "site": {
+  "title": "それ、何時間で払える？",
+  "defaultItem": "custom"
+ },
+ "items": [],
+ "geo": {
+  "name": "国土数値情報（行政区域データ 2025年版）",
+  "org": "国土交通省",
+  "url": "https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-2025.html",
+  "license": "CC BY 4.0",
+  "via": "japan-choropleth（共同通信社）の都道府県ポリゴン",
+  "viaUrl": "https://github.com/kyodo-official/japan-choropleth"
  }
 }

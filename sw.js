@@ -1,6 +1,6 @@
 // オフラインでも開けるよう、静的ファイルとデータをキャッシュする。
 // データ更新時は VERSION を上げる。
-const VERSION = "v2026-09-24";
+const VERSION = "v2026-09-24-3d";
 const FILES = [
   "./",
   "index.html",
@@ -9,6 +9,9 @@ const FILES = [
   "assets/calc.js",
   "assets/tiles.js",
   "assets/share.js",
+  "assets/map3d.js",
+  "assets/vendor/three.min.js",
+  "data/prefectures.geojson",
   "data/data.json",
   "manifest.webmanifest",
   "icons/icon.svg",

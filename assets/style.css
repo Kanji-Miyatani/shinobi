@@ -1,4 +1,4 @@
-/* それ、何時間労働？ ─ デザイントークン */
+/* それ、何時間で払える？ ─ デザイントークン */
 :root {
   --ink: #1c1633;
   --paper: #fff8ec;
@@ -125,7 +125,7 @@ a { color: inherit; }
 @media (min-width: 960px) {
   .stage-inner {
     grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-    grid-template-areas: "ask card" "map card";
+    grid-template-areas: "ask card" "map map";
     column-gap: var(--s7);
     align-items: start;
   }
@@ -220,7 +220,7 @@ a { color: inherit; }
   clip-path: polygon(0 0, calc(50% - 34px) 0, calc(50% - 22px) 14px, calc(50% + 22px) 14px, calc(50% + 34px) 0, 100% 0, 100% 100%, 0 100%);
 }
 @media (min-width: 960px) {
-  .timecard { position: sticky; top: var(--s5); margin-top: var(--s4); }
+  .timecard { margin-top: var(--s4); }
 }
 /* 左端のパンチ穴の列 */
 .timecard::before {
@@ -369,6 +369,48 @@ a { color: inherit; }
   transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--ink);
   position: relative; z-index: 1;
 }
+
+/* 立体地図 */
+.map-mode {
+  display: inline-flex; margin-bottom: var(--s3);
+  border: var(--line-thin) solid var(--ink); border-radius: var(--r-pill);
+  background: var(--card); overflow: hidden;
+}
+.map-mode-btn {
+  border: 0; background: transparent; cursor: pointer;
+  padding: var(--s1) var(--s4); font-weight: 700; font-size: .85rem; line-height: 1.6;
+}
+.map-mode-btn + .map-mode-btn { border-left: var(--line-thin) solid var(--ink); }
+.map-mode-btn[aria-pressed="true"] { background: var(--ink); color: var(--sun); }
+.map-mode-btn:not([aria-pressed="true"]):hover { background: #fff1b8; }
+.map3d {
+  position: relative;
+  aspect-ratio: 1 / 1.02;
+  max-height: 78vh;
+  width: 100%;
+  touch-action: pan-y;
+  overflow: hidden;
+}
+@media (min-width: 600px) { .map3d { aspect-ratio: 1 / .7; } }
+@media (min-width: 960px) { .map3d { aspect-ratio: 1 / .5; max-height: 640px; } }
+.map3d-canvas { display: block; width: 100%; height: 100%; cursor: grab; }
+.map3d-canvas:active { cursor: grabbing; }
+.map3d-label {
+  position: absolute; left: 0; top: 0;
+  pointer-events: none;
+  font-family: var(--f-head); font-size: .95rem; line-height: 1.3; white-space: nowrap;
+  background: var(--ink); color: var(--sun);
+  border-radius: var(--r-s);
+  padding: .3em .6em;
+  box-shadow: var(--pop-s);
+}
+.map3d-label::after {
+  content: ""; position: absolute; left: 50%; bottom: -7px; margin-left: -7px;
+  border: 7px solid transparent; border-bottom: 0; border-top-color: var(--ink);
+}
+.map3d-label.is-hover { background: var(--card); color: var(--ink); border: var(--line-thin) solid var(--ink); }
+.map3d-label.is-hover::after { border-top-color: var(--ink); }
+.map-hint { font-size: .8rem; line-height: 1.6; margin-top: var(--s2); }
 
 /* ───────── 2. 比べる ───────── */
 .versus {

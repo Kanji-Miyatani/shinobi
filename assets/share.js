@@ -51,7 +51,44 @@ function fitText(ctx, text, x, y, maxW, size, font, color = C.ink) {
   return s;
 }
 
+/** 立体地図のスナップショットから、透明な余白を除いた範囲を求める */
+function cropToContent(src) {
+  const c = document.createElement("canvas");
+  c.width = src.width;
+  c.height = src.height;
+  const g = c.getContext("2d", { willReadFrequently: true });
+  g.drawImage(src, 0, 0);
+  const { data } = g.getImageData(0, 0, c.width, c.height);
+  let x0 = c.width;
+  let y0 = c.height;
+  let x1 = 0;
+  let y1 = 0;
+  for (let y = 0; y < c.height; y += 2) {
+    for (let x = 0; x < c.width; x += 2) {
+      if (data[(y * c.width + x) * 4 + 3] > 8) {
+        if (x < x0) x0 = x;
+        if (x > x1) x1 = x;
+        if (y < y0) y0 = y;
+        if (y > y1) y1 = y;
+      }
+    }
+  }
+  if (x1 <= x0 || y1 <= y0) return { canvas: c, sx: 0, sy: 0, sw: c.width, sh: c.height };
+  return { canvas: c, sx: x0, sy: y0, sw: x1 - x0 + 2, sh: y1 - y0 + 2 };
+}
+
 function drawMap(ctx, m, x, y, w, h) {
+  if (m.mapImage && m.mapImage.width > 0) {
+    const { canvas: img, sx, sy, sw, sh } = cropToContent(m.mapImage);
+    const k = Math.min(w / sw, h / sh);
+    const iw = sw * k;
+    const ih = sh * k;
+    ctx.drawImage(img, sx, sy, sw, sh, x + (w - iw) / 2, y + (h - ih) / 2, iw, ih);
+    ctx.font = `700 22px ${BODY}`;
+    ctx.fillStyle = C.ink;
+    ctx.fillText("高く濃いほど長い", x, y + 22);
+    return;
+  }
   const cols = 13;
   const rows = 12;
   const gap = 4;
