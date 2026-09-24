@@ -44,15 +44,24 @@ test("最低賃金データが47都道府県そろい、公表の傾向と矛盾
   assert.equal(prefs.reduce((a, p) => (p.effective > a ? p.effective : a), ""), "2026-12-02");
 });
 
-test("ランキングは時間が長い順で、同じ時給は同順位", () => {
-  const r = rank(prefs, 364800, (p) => p.new);
+test("ランキングは時間が長い順で、表示上同じ時間なら同順位", () => {
+  const r = rank(prefs, () => 364800, (p) => p.new);
   assert.equal(r.length, 47);
   assert.equal(r[0].pref.name, "宮崎県");
   assert.equal(r[46].pref.name, "東京都");
   for (let i = 1; i < r.length; i++) assert.ok(r[i - 1].hours >= r[i].hours);
-  const same = r.filter((x) => x.wage === 1090);
+  const same = r.filter((x) => roundHours(x.hours) === roundHours(364800 / 1090));
   assert.ok(same.length > 1);
   assert.ok(same.every((x) => x.rank === same[0].rank));
+});
+
+test("県ごとに価格が違う品目は、県ごとの価格 ÷ 県ごとの時給で並ぶ", () => {
+  const two = prefs.filter((p) => p.code === 13 || p.code === 45);
+  const price = { 13: 128000, 45: 54250 };
+  const r = rank(two, (p) => price[p.code], (p) => p.new);
+  assert.equal(r[0].pref.name, "東京都");
+  assert.equal(roundHours(r[0].hours), 100.0);
+  assert.equal(roundHours(r[1].hours), 50.0);
 });
 
 test("タイル地図は47県を重ならずに置いている", () => {

@@ -42,17 +42,18 @@ export function wageOn(pref, isoDate) {
 }
 
 /**
- * 47県を必要時間の長い順に並べる（同時間なら都道府県コード順）。
- * 時給が同じ県は同じ順位にする（1, 2, 2, 4 …）。
+ * 47県を必要時間の長い順に並べる。
+ * 支出額も時給も県ごとに違うので、県ごとに priceOf(県) ÷ wageOf(県) を計算する。
+ * 表示上（小数1桁）で同じ時間になる県は同じ順位にする（1, 2, 2, 4 …）。
  */
-export function rank(prefs, amount, wageOf) {
+export function rank(prefs, priceOf, wageOf) {
   const sorted = prefs
-    .map((p) => ({ pref: p, wage: wageOf(p), hours: hoursFor(amount, wageOf(p)) }))
+    .map((p) => ({ pref: p, price: priceOf(p), wage: wageOf(p), hours: hoursFor(priceOf(p), wageOf(p)) }))
     .filter((r) => r.hours != null)
-    .sort((a, b) => a.wage - b.wage || a.pref.code - b.pref.code);
-  return sorted.map((r, i) => ({
+    .sort((a, b) => b.hours - a.hours || a.pref.code - b.pref.code);
+  return sorted.map((r) => ({
     ...r,
-    rank: sorted.findIndex((s) => s.wage === r.wage) + 1,
+    rank: sorted.findIndex((s) => roundHours(s.hours) === roundHours(r.hours)) + 1,
   }));
 }
 

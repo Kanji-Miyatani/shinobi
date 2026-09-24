@@ -29,7 +29,7 @@ const hm = (h) => {
 let DATA;
 const state = {
   pref: 13,
-  item: "iphone-duo-256",
+  item: null, // 初期値はデータの site.defaultItem
   amount: 10000,
   when: "new",
   vs: 45,
@@ -38,7 +38,6 @@ const state = {
 /* ───────── データ参照 ───────── */
 const mw = () => DATA.minimumWage;
 const prefByCode = (code) => mw().prefs.find((p) => p.code === code);
-const shortName = (p) => p.name.replace(/(都|府|県)$/, "");
 
 function wageOf(p) {
   return state.when === "new" ? p.new : wageOn(p, todayIso).wage;
@@ -54,10 +53,19 @@ function nationalAverage() {
     ? { wage: mw().weightedAverage.new, label: `${mw().fiscalYear}` }
     : { wage: mw().weightedAverage.old, label: mw().oldLabel };
 }
+/**
+ * 選んでいる支出。統計の品目は県ごとに価格が違うので priceOf(県) で引く。
+ * 任意の金額はどの県でも同じ額。
+ */
 function currentItem() {
-  if (state.item === CUSTOM) return { id: CUSTOM, name: "入力した金額", price: state.amount, custom: true };
-  return DATA.presets.find((p) => p.id === state.item) ?? DATA.presets[0];
+  if (state.item === CUSTOM) {
+    return { id: CUSTOM, name: "入力した金額", custom: true, priceOf: () => state.amount, national: state.amount };
+  }
+  const it = DATA.items.find((i) => i.id === state.item) ?? DATA.items[0];
+  return { ...it, priceOf: (p) => it.prices[p.code] };
 }
+const itemLabel = (item, pref) =>
+  item.custom ? `${yen(item.priceOf(pref))}円` : `${item.name}（${yen(item.priceOf(pref))}円）`;
 
 /* ───────── 初期化 ───────── */
 async function init() {
@@ -71,6 +79,7 @@ async function init() {
       "統計データを読み込めませんでした。通信状態を確認して、ページを再読み込みしてください。";
     return;
   }
+  state.item = DATA.site.defaultItem;
   readUrl();
   buildSelects();
   buildMap();
@@ -92,7 +101,7 @@ function readUrl() {
   const vs = Number(q.get("vs"));
   if (vs >= 1 && vs <= 47) state.vs = vs;
   const item = q.get("item");
-  if (item === CUSTOM || DATA.presets.some((p) => p.id === item)) state.item = item;
+  if (item === CUSTOM || DATA.items.some((i) => i.id === item)) state.item = item;
   const amount = Number(q.get("yen"));
   if (Number.isInteger(amount) && amount >= 1 && amount <= MAX_AMOUNT) state.amount = amount;
   if (q.get("when") === "today") state.when = "today";
@@ -115,16 +124,10 @@ function buildSelects() {
     .join("");
   for (const id of ["pref", "cmp-a", "cmp-b"]) $(id).innerHTML = prefOptions;
 
-  const presets = DATA.presets
-    .map((p) => `<option value="${p.id}">${p.name}（${yen(p.price)}円）</option>`)
-    .join("");
+  const items = DATA.items.map((i) => `<option value="${i.id}">${i.name}</option>`).join("");
   $("item").innerHTML = `
-    <optgroup label="話題の商品（税込）">${presets}</optgroup>
-    <option value="${CUSTOM}">金額を自分で入力する</option>
-    <optgroup label="準備中">
-      <option disabled>平均家賃1か月分（準備中）</option>
-      <option disabled>物価で補正した実質時給（準備中）</option>
-    </optgroup>`;
+    <optgroup label="県ごとの価格（公的統計）">${items}</optgroup>
+    <option value="${CUSTOM}">金額を自分で入力する</option>`;
   $("amount").value = yen(state.amount);
 }
 
@@ -213,7 +216,7 @@ function render({ punch = true } = {}) {
   const pref = prefByCode(state.pref);
   const item = currentItem();
   const wage = wageOf(pref);
-  const hours = hoursFor(item.price, wage);
+  const hours = hoursFor(item.priceOf(pref), wage);
 
   $("pref").value = String(state.pref);
   $("cmp-a").value = String(state.pref);
@@ -226,11 +229,11 @@ function render({ punch = true } = {}) {
   }
 
   renderTimecard(pref, item, wage, hours, punch);
-  const ranked = rank(mw().prefs, item.price, wageOf);
+  const ranked = rank(mw().prefs, item.priceOf, wageOf);
   renderMap(item, ranked);
   renderDuel(item);
   renderRanking(pref, ranked);
-  renderFormula(item, wage, hours);
+  renderFormula(item.priceOf(pref), wage, hours);
   writeUrl();
 }
 
@@ -240,7 +243,7 @@ function renderTimecard(pref, item, wage, hours, punch) {
   $("tc-pref").textContent = pref.name;
   $("tc-wage").textContent =
     `${yen(wage)}円（${wageLabel(pref)}` + (phase === "new" ? `・${md(pref.effective)}発効）` : "）");
-  $("tc-item").textContent = item.custom ? `${yen(item.price)}円` : `${item.name}（${yen(item.price)}円）`;
+  $("tc-item").textContent = itemLabel(item, pref);
 
   const { h, m } = toHoursMinutes(hours);
   $("tc-time").innerHTML = `${h.toLocaleString("ja-JP")}<small>時間</small>${String(m).padStart(2, "0")}<small>分</small>`;
@@ -251,10 +254,10 @@ function renderTimecard(pref, item, wage, hours, punch) {
   if (todayIso < pref.effective) {
     before.hidden = false;
     if (state.when === "new") {
-      const oldH = hoursFor(item.price, pref.old);
+      const oldH = hoursFor(item.priceOf(pref), pref.old);
       before.innerHTML = `${md(pref.effective)}の発効までは${mw().oldLabel}の<b>${yen(pref.old)}</b>円なので、<b>${hm(oldH)}</b>（${workdays(oldH).toFixed(1)}日ぶん）かかります。`;
     } else {
-      const newH = hoursFor(item.price, pref.new);
+      const newH = hoursFor(item.priceOf(pref), pref.new);
       before.innerHTML = `${md(pref.effective)}からは<b>${yen(pref.new)}</b>円（${mw().status}）に上がり、<b>${hm(newH)}</b>に縮みます。`;
     }
   } else {
@@ -263,10 +266,12 @@ function renderTimecard(pref, item, wage, hours, punch) {
 
   // 結果の横棒と全国の点線
   const nat = nationalAverage();
-  const natH = hoursFor(item.price, nat.wage);
+  const natH = hoursFor(item.national, nat.wage);
   const scale = Math.max(hours, natH) * 1.12;
   $("tc-bar").innerHTML = `<span class="fill" style="transform:scaleX(${hours / scale})"></span><span class="nat" style="left:${(natH / scale) * 100}%"></span>`;
-  $("tc-bar-note").innerHTML = `<span class="dot-key"></span>全国加重平均（${nat.label}・${yen(nat.wage)}円）なら${fmtH(natH)}時間`;
+  $("tc-bar-note").innerHTML = item.custom
+    ? `<span class="dot-key"></span>全国加重平均の最低賃金（${nat.label}・${yen(nat.wage)}円）なら${fmtH(natH)}時間`
+    : `<span class="dot-key"></span>全国（${item.short}${yen(item.national)}円、最低賃金の全国加重平均${yen(nat.wage)}円）なら${fmtH(natH)}時間`;
 
   if (punch) {
     const card = $("timecard");
@@ -303,15 +308,15 @@ function renderMap(item, ranked) {
     tile.setAttribute("aria-pressed", String(r.pref.code === state.pref));
     tile.setAttribute("aria-label", `${r.pref.name} ${fmtH(r.hours)}時間`);
   }
-  const what = item.custom ? `${yen(item.price)}円` : item.name;
-  $("map-caption").textContent = `${what}を最低賃金で払うと、各地で何時間？（数字は時間）`;
+  const what = item.custom ? `${yen(item.national)}円` : `その県の${item.name}`;
+  $("map-caption").textContent = `${what}を、その県の最低賃金で払うと何時間？（数字は時間）`;
 }
 
 function renderDuel(item) {
   const a = prefByCode(state.pref);
   const b = prefByCode(state.vs);
-  const ha = hoursFor(item.price, wageOf(a));
-  const hb = hoursFor(item.price, wageOf(b));
+  const ha = hoursFor(item.priceOf(a), wageOf(a));
+  const hb = hoursFor(item.priceOf(b), wageOf(b));
   const scale = Math.max(ha, hb) * 1.05;
   $("duel-bars").innerHTML = [
     [a, ha],
@@ -320,14 +325,14 @@ function renderDuel(item) {
     .map(
       ([p, h]) => `
       <div class="duel-row">
-        <div class="d-label"><span>${p.name}（時給${yen(wageOf(p))}円）</span><b>${fmtH(h)}時間</b></div>
+        <div class="d-label"><span>${p.name}<small>${item.custom ? "" : `${item.short}${yen(item.priceOf(p))}円・`}時給${yen(wageOf(p))}円</small></span><b>${fmtH(h)}時間</b></div>
         <div class="d-track" aria-hidden="true"><div class="d-fill" style="transform:scaleX(${h / scale})"></div></div>
       </div>`,
     )
     .join("");
   const diff = Math.abs(ha - hb);
   if (roundHours(diff) === 0) {
-    $("duel-diff").textContent = "時給が同じなので、かかる時間も同じです。";
+    $("duel-diff").textContent = "どちらの県でも、かかる時間は同じです。";
   } else {
     const faster = ha < hb ? a : b;
     $("duel-diff").innerHTML = `${faster.name}のほうが<b>${fmtH(diff)}時間</b>早く払い終わります。8時間勤務に直すと${workdays(diff).toFixed(1)}日の差です。`;
@@ -363,25 +368,26 @@ function renderRanking(pref, ranked) {
     .join("");
 }
 
-function renderFormula(item, wage, hours) {
-  $("formula").innerHTML = `${yen(item.price)}円<span class="op">÷</span>${yen(wage)}円<span class="op">=</span><span class="ans">${fmtH(hours)}時間</span>`;
+function renderFormula(price, wage, hours) {
+  $("formula").innerHTML = `${yen(price)}円<span class="op">÷</span>${yen(wage)}円<span class="op">=</span><span class="ans">${fmtH(hours)}時間</span>`;
 }
 
 function renderSources() {
   const m = mw();
-  const ps = DATA.presetSource;
+  const items = DATA.items
+    .map(
+      (i) => `
+    <li>
+      ${i.name}：<a href="${i.source.url}" rel="noopener" target="_blank">${i.source.org}「${i.source.name}」</a>
+      <span class="src-meta">${i.source.detail}。${i.source.org}の公表資料を加工して作成。</span>
+    </li>`,
+    )
+    .join("");
   $("source-list").innerHTML = `
     <li>
       最低賃金：<a href="${m.source.url}" rel="noopener" target="_blank">${m.source.org}「全ての都道府県で地域別最低賃金の改定額が答申されました」</a>
       <span class="src-meta">${m.fiscalYear}の${m.status}と${m.oldLabel}の額、発効予定日。${m.source.org}の公表資料を加工して作成。取得日 ${ymd(m.retrieved)}。一覧は<a href="${m.listUrl}" rel="noopener" target="_blank">地域別最低賃金の全国一覧</a>。</span>
-    </li>
-    <li>
-      商品価格：<a href="${ps.url}" rel="noopener" target="_blank">${ps.name}</a>
-      <span class="src-meta">登録日 ${ymd(ps.registered)}。価格が変わっている場合があります。</span>
-    </li>
-    <li>
-      平均賃金・中央値（推計）・平均家賃・物価は準備中です。賃金構造基本統計調査、就業構造基本調査、住宅・土地統計調査、消費者物価地域差指数を使う予定です。
-    </li>`;
+    </li>${items}`;
 }
 
 /* ───────── シェア ───────── */
@@ -390,8 +396,8 @@ function shareModel() {
   const pref = prefByCode(state.pref);
   const item = currentItem();
   const wage = wageOf(pref);
-  const hours = hoursFor(item.price, wage);
-  const ranked = rank(mw().prefs, item.price, wageOf);
+  const hours = hoursFor(item.priceOf(pref), wage);
+  const ranked = rank(mw().prefs, item.priceOf, wageOf);
   const vs = prefByCode(state.vs);
   return {
     shape: form.shape.value,
@@ -399,17 +405,21 @@ function shareModel() {
     pref,
     wage,
     wageLabel: wageLabel(pref),
-    item: item.custom && !$("share-amount").checked ? { ...item, hidden: true } : item,
+    title: DATA.site.title,
+    what: item.custom && !$("share-amount").checked ? "ある買い物" : itemLabel(item, pref),
     hours,
     hm: hm(hours),
     days: workdays(hours).toFixed(1),
     tiles: TILES,
     ranked,
     rampColor,
-    vs: { pref: vs, hours: hoursFor(item.price, wageOf(vs)), wage: wageOf(vs) },
+    vs: { pref: vs, hours: hoursFor(item.priceOf(vs), wageOf(vs)), wage: wageOf(vs) },
     fmtH,
     yen,
-    credit: `最低賃金：${wageLabel(pref)}（${mw().source.org}）を加工して作成。額面（税・社会保険料の控除前）。`,
+    credit:
+      `最低賃金：${wageLabel(pref)}（${mw().source.org}）` +
+      (item.custom ? "" : `、${item.short}：${item.source.credit}`) +
+      "を加工して作成。額面（税・社会保険料の控除前）。",
     url: `${location.origin}${location.pathname}`,
   };
 }
@@ -453,7 +463,7 @@ function bindShare() {
     const url = `${location.origin}${location.pathname}?${new URLSearchParams(location.search)}`;
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       try {
-        await navigator.share({ files: [file], text: "それ、何時間労働？", url });
+        await navigator.share({ files: [file], text: DATA.site.title, url });
         status.textContent = "";
       } catch (err) {
         if (err.name !== "AbortError") status.textContent = "共有できませんでした。「画像を保存する」から保存して、SNSに添付してください。";

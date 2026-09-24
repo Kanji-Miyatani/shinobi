@@ -413,6 +413,7 @@ a { color: inherit; }
 .duel-bars { display: grid; gap: var(--s4); margin-top: var(--s5); }
 .duel-row { display: grid; gap: var(--s1); }
 .duel-row .d-label { display: flex; justify-content: space-between; gap: var(--s3); font-weight: 700; }
+.duel-row .d-label small { display: block; font-size: .8rem; font-weight: 400; }
 .duel-row .d-label b { font-family: var(--f-dot); font-weight: 400; font-size: 1.35rem; line-height: 1.2; }
 .duel-row .d-track {
   height: 44px; border: var(--line) solid var(--ink); border-radius: var(--r-s);

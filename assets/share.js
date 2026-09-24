@@ -13,10 +13,10 @@ const HEAD = '"Dela Gothic One", "Hiragino Sans", sans-serif';
 const BODY = '"Zen Kaku Gothic New", "Hiragino Sans", sans-serif';
 const DOT = '"DotGothic16", monospace';
 
-async function loadFonts() {
+async function loadFonts(m) {
   if (!document.fonts) return;
   await Promise.all([
-    document.fonts.load(`40px ${HEAD}`, "それ何時間労働東京都の最低賃金"),
+    document.fonts.load(`40px ${HEAD}`, `${m.title}${m.pref.name}${m.what}の最低賃金時給円を払うと`),
     document.fonts.load(`700 20px ${BODY}`, "最低賃金勤務"),
     document.fonts.load(`40px ${DOT}`, "0123456789時間分"),
   ]).catch(() => {});
@@ -116,7 +116,7 @@ function drawBars(ctx, m, x, y, w, h) {
 }
 
 export async function drawShareCard(canvas, m) {
-  await loadFonts();
+  await loadFonts(m);
   const W = m.shape === "square" ? 1080 : 1200;
   const H = m.shape === "square" ? 1080 : 630;
   canvas.width = W;
@@ -134,7 +134,7 @@ export async function drawShareCard(canvas, m) {
 
   // ロゴ
   ctx.font = `30px ${HEAD}`;
-  const logo = "それ、何時間労働？";
+  const logo = m.title;
   const lw = ctx.measureText(logo).width + 36;
   box(ctx, pad, pad, lw, 58, 29, C.ink, { shadow: 0, line: 0 });
   ctx.fillStyle = C.sun;
@@ -144,12 +144,7 @@ export async function drawShareCard(canvas, m) {
   let y = pad + 58 + (wide ? 62 : 74);
   fitText(ctx, `${m.pref.name}の最低賃金（時給${m.yen(m.wage)}円）で`, pad, y, textW, wide ? 34 : 40, HEAD);
   y += wide ? 52 : 60;
-  const what = m.item.hidden
-    ? "ある買い物"
-    : m.item.custom
-      ? `${m.yen(m.item.price)}円`
-      : `${m.item.name}（${m.yen(m.item.price)}円）`;
-  fitText(ctx, `${what}を払うと`, pad, y, textW, wide ? 34 : 40, HEAD);
+  fitText(ctx, `${m.what}を払うと`, pad, y, textW, wide ? 34 : 40, HEAD);
 
   // タイムカード風の結果
   y += wide ? 30 : 40;
