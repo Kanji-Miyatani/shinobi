@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkfrontend=self.webpackChunkfrontend||[]).push([[88],{9088:function(e,n,s){e.exports=s.p+"static/media/shinobi.d0fc55ce1c039bbbf798.svg"}}]);

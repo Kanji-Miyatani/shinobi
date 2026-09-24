@@ -1,24 +1,15 @@
 {
-  "name": "neetsincompanyweb",
-  "version": "1.0.0",
-  "engines": {
-    "node": "16.x"
-  },
-  "description": "",
-  "main": "index.js",
+  "name": "sore-nanjikan-roudou",
+  "version": "0.1.0",
+  "private": true,
+  "description": "それ、何時間労働？ 値札を都道府県の最低賃金で割って労働時間に換算する静的Webアプリ",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node backend/dist/index.js"
-    
+    "start": "npx --yes serve -l 8080 .",
+    "test": "node --test tests/*.test.mjs"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Kanji-Miyatani/shinobi.git"
+  "engines": {
+    "node": ">=20"
   },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Kanji-Miyatani/shinobi/issues"
-  },
-  "homepage": "https://github.com/Kanji-Miyatani/shinobi#readme"
+  "license": "MIT"
 }
