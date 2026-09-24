@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>それ、何時間労働？</title>
+  <meta name="description" content="都道府県と買いたいものを選ぶと、最低賃金で何時間働けば払えるかを表示します。47都道府県の地図とランキングで、同じ値札の重さを比べられます。">
+  <meta name="theme-color" content="#FFD23F">
+  <meta property="og:title" content="それ、何時間労働？">
+  <meta property="og:description" content="値札を、その県の時給で割ってみる。47都道府県の最低賃金で「何時間働けば買えるか」を比べるWebアプリ。">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=DotGothic16&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="preload" href="data/data.json" as="fetch" crossorigin>
+</head>
+<body>
+  <a class="skip" href="#app">計算画面へ移動</a>
+
+  <header class="masthead">
+    <p class="logo">それ、<span>何時間</span>労働？</p>
+    <a class="masthead-link" href="#sources">数字の出どころ</a>
+  </header>
+
+  <main id="app">
+    <!-- 1. 選ぶ → 結果（トップ画面） -->
+    <section class="stage" aria-labelledby="stage-title">
+      <div class="stage-inner">
+        <div class="ask">
+          <h1 id="stage-title" class="ask-title">値札を、<br>時給で割って<wbr>みる。</h1>
+
+          <form class="sentence" id="picker" aria-label="条件を選ぶ">
+            <span class="pair"><label class="slot slot-pref">
+              <span class="vh">都道府県</span>
+              <select id="pref"></select>
+            </label><span class="glue">の</span></span>
+            <span class="pair"><label class="slot slot-income">
+              <span class="vh">収入の基準</span>
+              <select id="income">
+                <option value="min">最低賃金</option>
+                <option value="avg" disabled>平均賃金（準備中）</option>
+                <option value="median" disabled>中央値（準備中）</option>
+              </select>
+            </label><span class="glue">で、</span></span>
+            <span class="pair"><label class="slot slot-item">
+              <span class="vh">支出</span>
+              <select id="item"></select>
+            </label><span class="glue" id="item-glue">を払うと…</span></span>
+            <span class="pair" id="amount-wrap" hidden><label class="slot slot-amount">
+                <span class="vh">金額（円）</span>
+                <input id="amount" type="text" inputmode="numeric" autocomplete="off" value="10,000" aria-describedby="amount-error">
+              </label><span class="glue">円を払うと…</span></span>
+            <p class="amount-error" id="amount-error" role="alert" hidden></p>
+          </form>
+
+          <div class="when" role="radiogroup" aria-label="どの時点の最低賃金で計算するか">
+            <button type="button" class="when-btn" data-when="new" aria-pressed="true">改定後の額<small>令和8年度 答申額</small></button>
+            <button type="button" class="when-btn" data-when="today" aria-pressed="false">今日の額<small id="today-label"></small></button>
+          </div>
+        </div>
+
+        <!-- シグネチャー：タイムカード -->
+        <article class="timecard" id="timecard" aria-live="polite">
+          <div class="tc-head">
+            <span class="tc-brand">TIME CARD</span>
+            <span class="tc-no" id="tc-no"></span>
+          </div>
+          <dl class="tc-fields">
+            <div><dt>勤務地</dt><dd id="tc-pref"></dd></div>
+            <div><dt>時給</dt><dd id="tc-wage"></dd></div>
+            <div><dt>支払い</dt><dd id="tc-item"></dd></div>
+          </dl>
+          <div class="tc-punch">
+            <p class="tc-label">必要な労働時間</p>
+            <p class="tc-time" id="tc-time"></p>
+            <p class="tc-days" id="tc-days"></p>
+          </div>
+          <p class="tc-before" id="tc-before" hidden></p>
+          <div class="tc-bar" id="tc-bar" aria-hidden="true"></div>
+          <p class="tc-bar-note" id="tc-bar-note"></p>
+          <div class="tc-actions">
+            <button type="button" class="btn btn-share" id="open-share">結果を画像でシェアする</button>
+          </div>
+        </article>
+
+        <!-- 日本地図 -->
+        <figure class="mapbox">
+          <figcaption class="map-cap">
+            <span id="map-caption"></span>
+            <span class="legend" aria-hidden="true"><span>短い</span><i class="ramp"></i><span>長い</span></span>
+          </figcaption>
+          <div class="tilemap" id="tilemap" role="group" aria-label="都道府県を選ぶ地図。各マスの数字は必要な労働時間"></div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 2. 比べる -->
+    <section class="versus" aria-labelledby="versus-title">
+      <div class="versus-inner">
+        <div class="duel">
+          <h2 id="versus-title" class="sec-title">隣の県と、<br>何時間ちがう？</h2>
+          <div class="duel-pick">
+            <label><span class="vh">比べる県1</span><select id="cmp-a"></select></label>
+            <span class="duel-vs" aria-hidden="true">VS</span>
+            <label><span class="vh">比べる県2</span><select id="cmp-b"></select></label>
+          </div>
+          <div class="duel-bars" id="duel-bars"></div>
+          <p class="duel-diff" id="duel-diff"></p>
+        </div>
+
+        <div class="ranking">
+          <h2 class="sec-title sec-title-sm">47都道府県ランキング</h2>
+          <p class="rank-lead" id="rank-lead"></p>
+          <ol class="rank-list" id="rank-list"></ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 数字の出どころ -->
+    <section class="sources" id="sources" aria-labelledby="sources-title">
+      <div class="sources-inner">
+        <h2 id="sources-title" class="sec-title">数字の出どころ</h2>
+
+        <p class="formula" id="formula" aria-live="polite"></p>
+        <p class="formula-note">計算は「金額 ÷ 時給」だけです。8時間勤務の日数は、時間を8で割っています。時間・日数とも小数第1位で四捨五入しています。</p>
+
+        <div class="facts">
+          <div class="fact-src">
+            <h3>使っている統計</h3>
+            <ul id="source-list"></ul>
+          </div>
+          <div class="fact-caveat">
+            <h3>読むときの注意</h3>
+            <ul>
+              <li>時給は税金や社会保険料を引く前の額（額面）です。手取りではありません。</li>
+              <li>最低賃金は各地の審議会の答申額です。公示で確定したら差し替えます。発効日前の県は、改定前の額もあわせて表示しています。</li>
+              <li>商品名と価格は各社の公式発表をもとにした文字情報です。このサイトは各社の公認・提携を受けたものではありません。</li>
+              <li>入力した金額や選んだ条件は端末の中だけで計算し、どこにも送信・保存しません。</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3 class="cal-title">データの更新予定</h3>
+        <ol class="calendar">
+          <li><b>3月</b>賃金構造基本統計調査（平均賃金）</li>
+          <li><b>6月</b>消費者物価地域差指数（物価）</li>
+          <li><b>10〜12月</b>最低賃金の発効にあわせて確定額へ</li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>それ、何時間労働？ ／ 公的統計を加工して作成しています。</p>
+    <p id="data-stamp"></p>
+  </footer>
+
+  <!-- シェアカード -->
+  <dialog class="share" id="share" aria-labelledby="share-title">
+    <form method="dialog" class="share-inner">
+      <h2 id="share-title" class="share-title">シェア用の画像</h2>
+      <div class="share-preview"><canvas id="share-canvas" width="1200" height="630" role="img" aria-label="シェア用画像のプレビュー"></canvas></div>
+      <fieldset class="share-opt">
+        <legend>形</legend>
+        <label><input type="radio" name="shape" value="wide" checked> 横長</label>
+        <label><input type="radio" name="shape" value="square"> 正方形</label>
+      </fieldset>
+      <fieldset class="share-opt">
+        <legend>一緒に載せる図</legend>
+        <label><input type="radio" name="figure" value="map" checked> 地図</label>
+        <label><input type="radio" name="figure" value="bars"> 2県比較の棒グラフ</label>
+      </fieldset>
+      <label class="share-check" id="share-amount-opt" hidden><input type="checkbox" id="share-amount" checked> 入力した金額を画像に載せる</label>
+      <p class="share-status" id="share-status" role="status"></p>
+      <div class="share-actions">
+        <button type="button" class="btn btn-share" id="do-share">この画像をシェアする</button>
+        <button type="button" class="btn btn-plain" id="do-save">画像を保存する</button>
+        <button type="submit" class="btn btn-plain">閉じる</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script type="module" src="assets/app.js"></script>
+</body>
+</html>

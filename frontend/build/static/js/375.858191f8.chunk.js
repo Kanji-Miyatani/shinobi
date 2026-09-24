@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkfrontend=self.webpackChunkfrontend||[]).push([[375],{5375:function(e,n,s){e.exports=s.p+"static/media/goku.02b1779c4dc5f5e53ae7.svg"}}]);

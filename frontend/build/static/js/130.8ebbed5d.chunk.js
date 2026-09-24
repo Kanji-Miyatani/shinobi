@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkfrontend=self.webpackChunkfrontend||[]).push([[130],{4130:function(e,n,s){e.exports=s.p+"static/media/pikachu.29b586ecd4be98be4d47.svg"}}]);

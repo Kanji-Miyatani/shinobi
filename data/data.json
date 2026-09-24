@@ -1,0 +1,378 @@
+{
+ "version": "2026-09-24",
+ "minimumWage": {
+  "label": "令和8年度 地域別最低賃金（答申額）",
+  "status": "答申額",
+  "fiscalYear": "令和8年度",
+  "oldLabel": "令和7年度",
+  "weightedAverage": {
+   "new": 1177,
+   "old": 1121
+  },
+  "retrieved": "2026-09-24",
+  "source": {
+   "name": "地域別最低賃金の全国一覧・全ての都道府県で地域別最低賃金の改定額が答申されました",
+   "org": "厚生労働省",
+   "url": "https://www.mhlw.go.jp/stf/newpage_75950.html"
+  },
+  "listUrl": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/minimumichiran/index.html",
+  "prefs": [
+   {
+    "code": 1,
+    "name": "北海道",
+    "new": 1131,
+    "old": 1075,
+    "effective": "2026-10-01"
+   },
+   {
+    "code": 2,
+    "name": "青森県",
+    "new": 1090,
+    "old": 1029,
+    "effective": "2026-10-29"
+   },
+   {
+    "code": 3,
+    "name": "岩手県",
+    "new": 1090,
+    "old": 1031,
+    "effective": "2026-12-01"
+   },
+   {
+    "code": 4,
+    "name": "宮城県",
+    "new": 1098,
+    "old": 1038,
+    "effective": "2026-10-01"
+   },
+   {
+    "code": 5,
+    "name": "秋田県",
+    "new": 1090,
+    "old": 1031,
+    "effective": "2026-10-14"
+   },
+   {
+    "code": 6,
+    "name": "山形県",
+    "new": 1092,
+    "old": 1032,
+    "effective": "2026-10-30"
+   },
+   {
+    "code": 7,
+    "name": "福島県",
+    "new": 1094,
+    "old": 1033,
+    "effective": "2026-10-16"
+   },
+   {
+    "code": 8,
+    "name": "茨城県",
+    "new": 1136,
+    "old": 1074,
+    "effective": "2026-10-18"
+   },
+   {
+    "code": 9,
+    "name": "栃木県",
+    "new": 1125,
+    "old": 1068,
+    "effective": "2026-10-01"
+   },
+   {
+    "code": 10,
+    "name": "群馬県",
+    "new": 1120,
+    "old": 1063,
+    "effective": "2026-10-03"
+   },
+   {
+    "code": 11,
+    "name": "埼玉県",
+    "new": 1196,
+    "old": 1141,
+    "effective": "2026-10-01"
+   },
+   {
+    "code": 12,
+    "name": "千葉県",
+    "new": 1195,
+    "old": 1140,
+    "effective": "2026-10-01"
+   },
+   {
+    "code": 13,
+    "name": "東京都",
+    "new": 1280,
+    "old": 1226,
+    "effective": "2026-10-01"
+   },
+   {
+    "code": 14,
+    "name": "神奈川県",
+    "new": 1279,
+    "old": 1225,
+    "effective": "2026-10-01"
+   },
+   {
+    "code": 15,
+    "name": "新潟県",
+    "new": 1108,
+    "old": 1050,
+    "effective": "2026-10-01"
+   },
+   {
+    "code": 16,
+    "name": "富山県",
+    "new": 1119,
+    "old": 1062,
+    "effective": "2026-10-01"
+   },
+   {
+    "code": 17,
+    "name": "石川県",
+    "new": 1113,
+    "old": 1054,
+    "effective": "2026-10-03"
+   },
+   {
+    "code": 18,
+    "name": "福井県",
+    "new": 1112,
+    "old": 1053,
+    "effective": "2026-10-04"
+   },
+   {
+    "code": 19,
+    "name": "山梨県",
+    "new": 1113,
+    "old": 1052,
+    "effective": "2026-11-01"
+   },
+   {
+    "code": 20,
+    "name": "長野県",
+    "new": 1117,
+    "old": 1061,
+    "effective": "2026-10-02"
+   },
+   {
+    "code": 21,
+    "name": "岐阜県",
+    "new": 1121,
+    "old": 1065,
+    "effective": "2026-10-01"
+   },
+   {
+    "code": 22,
+    "name": "静岡県",
+    "new": 1154,
+    "old": 1097,
+    "effective": "2026-10-15"
+   },
+   {
+    "code": 23,
+    "name": "愛知県",
+    "new": 1195,
+    "old": 1140,
+    "effective": "2026-10-01"
+   },
+   {
+    "code": 24,
+    "name": "三重県",
+    "new": 1143,
+    "old": 1087,
+    "effective": "2026-10-01"
+   },
+   {
+    "code": 25,
+    "name": "滋賀県",
+    "new": 1136,
+    "old": 1080,
+    "effective": "2026-10-03"
+   },
+   {
+    "code": 26,
+    "name": "京都府",
+    "new": 1180,
+    "old": 1122,
+    "effective": "2026-11-16"
+   },
+   {
+    "code": 27,
+    "name": "大阪府",
+    "new": 1231,
+    "old": 1177,
+    "effective": "2026-10-01"
+   },
+   {
+    "code": 28,
+    "name": "兵庫県",
+    "new": 1172,
+    "old": 1116,
+    "effective": "2026-10-01"
+   },
+   {
+    "code": 29,
+    "name": "奈良県",
+    "new": 1107,
+    "old": 1051,
+    "effective": "2026-10-04"
+   },
+   {
+    "code": 30,
+    "name": "和歌山県",
+    "new": 1101,
+    "old": 1045,
+    "effective": "2026-10-03"
+   },
+   {
+    "code": 31,
+    "name": "鳥取県",
+    "new": 1090,
+    "old": 1030,
+    "effective": "2026-10-03"
+   },
+   {
+    "code": 32,
+    "name": "島根県",
+    "new": 1092,
+    "old": 1033,
+    "effective": "2026-10-10"
+   },
+   {
+    "code": 33,
+    "name": "岡山県",
+    "new": 1104,
+    "old": 1047,
+    "effective": "2026-10-02"
+   },
+   {
+    "code": 34,
+    "name": "広島県",
+    "new": 1141,
+    "old": 1085,
+    "effective": "2026-10-11"
+   },
+   {
+    "code": 35,
+    "name": "山口県",
+    "new": 1101,
+    "old": 1043,
+    "effective": "2026-10-08"
+   },
+   {
+    "code": 36,
+    "name": "徳島県",
+    "new": 1103,
+    "old": 1046,
+    "effective": "2026-11-01"
+   },
+   {
+    "code": 37,
+    "name": "香川県",
+    "new": 1092,
+    "old": 1036,
+    "effective": "2026-10-01"
+   },
+   {
+    "code": 38,
+    "name": "愛媛県",
+    "new": 1093,
+    "old": 1033,
+    "effective": "2026-11-01"
+   },
+   {
+    "code": 39,
+    "name": "高知県",
+    "new": 1086,
+    "old": 1023,
+    "effective": "2026-10-29"
+   },
+   {
+    "code": 40,
+    "name": "福岡県",
+    "new": 1114,
+    "old": 1057,
+    "effective": "2026-10-04"
+   },
+   {
+    "code": 41,
+    "name": "佐賀県",
+    "new": 1095,
+    "old": 1030,
+    "effective": "2026-11-15"
+   },
+   {
+    "code": 42,
+    "name": "長崎県",
+    "new": 1087,
+    "old": 1031,
+    "effective": "2026-11-02"
+   },
+   {
+    "code": 43,
+    "name": "熊本県",
+    "new": 1092,
+    "old": 1034,
+    "effective": "2026-12-01"
+   },
+   {
+    "code": 44,
+    "name": "大分県",
+    "new": 1096,
+    "old": 1035,
+    "effective": "2026-11-01"
+   },
+   {
+    "code": 45,
+    "name": "宮崎県",
+    "new": 1085,
+    "old": 1023,
+    "effective": "2026-10-24"
+   },
+   {
+    "code": 46,
+    "name": "鹿児島県",
+    "new": 1090,
+    "old": 1026,
+    "effective": "2026-10-25"
+   },
+   {
+    "code": 47,
+    "name": "沖縄県",
+    "new": 1086,
+    "old": 1023,
+    "effective": "2026-12-02"
+   }
+  ]
+ },
+ "presets": [
+  {
+   "id": "iphone-duo-256",
+   "name": "iPhone Duo 256GB",
+   "price": 364800
+  },
+  {
+   "id": "iphone-duo-512",
+   "name": "iPhone Duo 512GB",
+   "price": 399800
+  },
+  {
+   "id": "iphone-duo-1tb",
+   "name": "iPhone Duo 1TB",
+   "price": 469800
+  },
+  {
+   "id": "iphone-duo-2tb",
+   "name": "iPhone Duo 2TB",
+   "price": 574800
+  }
+ ],
+ "presetSource": {
+  "name": "iPhone Duo を購入（Apple公式、税込価格）",
+  "url": "https://www.apple.com/jp/shop/buy-iphone/iphone-duo",
+  "registered": "2026-09-24"
+ }
+}
